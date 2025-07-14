@@ -1,0 +1,12 @@
+---
+alwaysApply: true
+---
+# Coding workflow preferences
+- Focus on the areas of code relevant to the task
+- Do not touch code that is unrelated to the task
+- Write thorough tests for all major functionality
+- Avoid making major changes to the patterns and architecture of how a feature works, after it has shown to work well, unless explicitly instructed
+- Always think about what other methods and areas of code might be affected by code changes
+- Every function should do one thing and do it well. Its name should reflect that single purpose.
+- Keep different parts of the application separate. UI code should be separate from API communication logic, which should be separate from business logic.
+- Frontend validation is for user experience. Backend validation is for security and data integrity. The backend must never trust data coming from the client. It must re-validate everything.
