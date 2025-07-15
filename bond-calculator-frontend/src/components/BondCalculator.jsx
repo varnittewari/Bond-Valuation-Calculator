@@ -9,6 +9,8 @@ const BondCalculator = () => {
     annualMarketRate: '',
     paymentFrequency: ''
   });
+  const [calculatedValue, setCalculatedValue] = useState(null);
+  const [error, setError] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -18,10 +20,31 @@ const BondCalculator = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Bond calculation logic will be implemented later
-    console.log('Form submitted:', formData);
+    // Clear previous results and errors
+    setCalculatedValue(null);
+    setError('');
+
+    try {
+      const response = await fetch('http://localhost:3001/api/calculate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setCalculatedValue(data.bondValue);
+      } else {
+        setError(data.error || 'An error occurred while calculating the bond value');
+      }
+    } catch (err) {
+      setError('Network error: Could not connect to the calculation service');
+    }
   };
 
   return (
@@ -91,7 +114,18 @@ const BondCalculator = () => {
         <button type="submit">Calculate Bond Value</button>
       </form>
 
-      <h2 className="result">Calculation result will appear here</h2>
+      {calculatedValue !== null && (
+        <h2 className="result success">
+          Calculated Bond Value: ${calculatedValue.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          })}
+        </h2>
+      )}
+
+      {error && (
+        <h2 className="result error">{error}</h2>
+      )}
     </div>
   );
 };
